@@ -8,34 +8,38 @@ Genotyping a larger plant population using skim-sequencing such as Nextera seque
   
 ##### 1. The WGS data were trimmed using fastp to remove adapters 
 ```
-fastp -i sample.R1.fq -I sample.R2.fq -o sample.fp.R1.fq.gz -O sample.fp.R2.fq.gz --thread=5 --html=sample.html --json=sample.json --detect_adapter_for_pe --qualified_quality_phred=10 --length_required=150
+fastp -i sample.R1.fq -I sample.R2.fq -o sample.fp.R1.fq.gz -O sample.fp.R2.fq.gz --thread=7 --html=sample.html --json=sample.json --detect_adapter_for_pe --qualified_quality_phred=10 --length_required=150
 ```
 
 
-The whole genome sequecning (WGS) of two parents (Landmark and Stanley) were aligned to the reference genome using Hisat2:
+The WGS data of two monococcum parents were aligned to the TA299 wild monoroccom reference genome using Hisat2:
 ```
-hisat2-2.1.0/hisat2 -p 10 -x 170831_Landmark_pseudomolecules_v1 -1 Landmark.R1.fq -2 Landmark.R2.fq --no-spliced-alignment --no-unal -S Landmark.sam
-hisat2-2.1.0/hisat2 -p 10 -x 170831_Landmark_pseudomolecules_v1 -1 Stanley.R1.fq -2 Stanley.R2.fq --no-spliced-alignment --no-unal -S Stanley.sam
+hisat2-2.1.0/hisat2 -p 12 -x TA299_validated_v1.0.monoc.ref -1 TA4342_L95.fp.R1.fq.gz -2 TA4342_L95.fp.R2.fq.gz--no-spliced-alignment --no-unal -S TA4342_L95.sam
+hisat2-2.1.0/hisat2 -p 12 -x TA299_validated_v1.0.monoc.ref -1 TA4342_L96.fp.R1.fq.gz -2 TA4342_L96.fp.R2.fq.gz--no-spliced-alignment --no-unal -S TA4342_L96.sam
 ```
 
 Retriving concordant unique reads:
 ```
-cat <(samtools view -H Landmark.sam) <(awk '/YT:Z:CP/ && /NH:i:1/' Landmark.sam) | samtools sort -o Landmark.s.bam
-samtools index -c Landmark.s.bam
-cat <(samtools view -H Stanley.sam) <(awk '/YT:Z:CP/ && /NH:i:1/' Stanley.sam) | samtools sort -o Stanley.s.bam
-samtools index -c Stanley.s.bam
+cat <(samtools view -H TA4342_L95.sam) <(awk '/YT:Z:CP/ && /NH:i:1/' TA4342_L95.sam) | samtools sort -o TA4342_L95.s.bam
+samtools index -c TA4342_L95.s.bam
+cat <(samtools view -H TA4342_L96.sam) <(awk '/YT:Z:CP/ && /NH:i:1/' TA4342_L96.sam) | samtools sort -o TA4342_L96.s.bam
+samtools index -c TA4342_L96.s.bam
 ```
 
 Variant calling:
 ```
-bcftools1.10.2/bin/bcftools mpileup --annotate AD,DP,INFO/AD --skip-indels -f 170831_Landmark_pseudomolecules_v1.fasta -b bamFilesList.txt -B | bcftools1.10.2/bin/bcftools call -m --variants-only  --skip-variants indels --output-type v -o LandmarkStanley.vcf --group-samples -
+bcftools mpileup --annotate AD,DP,INFO/AD --skip-indels -f TA299_validated_v1.0.monoc.ref.fasta -b bamFilesList.txt -B | bcftools call -m --variants-only  --skip-variants indels --output-type v -o monococcum.parents.with.TA299.vcf --group-samples -
 ```
+Variant filter:
 
-#### 2. Genotyping of variants identified between parents in a doubled haploid population.
+The variants called on parents were filtered so as to remove any loci with het genotype call, missing call and monoallelics
+
+
+#### 2. Genotyping of variants identified between parents in a recombinant inbred line (RIL) population.
 
 The SNP positions are listed in a file which is used in BCFtools:
 ```
-grep -v '^#' LandmarkStanley.vcf | awk '{print $1"\t"$2"\t"$4","$5}' | bgzip -c > parentSNP_positions.tsv.gz && tabix -s1 -b2 -e2 parentSNP_positions.tsv.gz
+grep -v '^#' monococcum.parents.with.TA299.vcf | awk '{print $1"\t"$2"\t"$4","$5}' | bgzip -c > parentSNP_positions.tsv.gz && tabix -s1 -b2 -e2 parentSNP_positions.tsv.gz
 ```
 
 Remove adapters:
