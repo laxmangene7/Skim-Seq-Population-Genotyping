@@ -3,8 +3,14 @@ Genotyping a larger plant population using skim-sequencing such as Nextera seque
 
 # Generating Parent VCF file
 
-### B. Variant calling
-#### 1. Discovering variants between the two parents
+### A. Variant calling in whole-genome-sequencing (WGS) parents
+  Two monococcum wheat parents;  wild (TA4342_L95) and domesticated (TA4342_L96) and their progenies (RIL7) were used to test the pipeline. 
+  
+##### 1. The WGS data were trimmed using fastp to remove adapters 
+```
+fastp -i sample.R1.fq -I sample.R2.fq -o sample.fp.R1.fq.gz -O sample.fp.R2.fq.gz --thread=5 --html=sample.html --json=sample.json --detect_adapter_for_pe --qualified_quality_phred=10 --length_required=150
+```
+
 
 The whole genome sequecning (WGS) of two parents (Landmark and Stanley) were aligned to the reference genome using Hisat2:
 ```
