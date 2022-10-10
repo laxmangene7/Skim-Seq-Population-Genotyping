@@ -6,7 +6,7 @@ Genotyping a larger plant population using skim-sequencing such as Nextera seque
 ### A. Variant calling in whole-genome-sequencing (WGS) parents
   Two monococcum wheat parents;  wild (TA4342_L95) and domesticated (TA4342_L96) and their progenies (RIL7) were used to test the pipeline. 
   
-##### 1. The WGS data were trimmed using fastp to remove adapters 
+ Trimming WGS data using fastp to remove adapters 
 ```
 fastp -i sample.R1.fq -I sample.R2.fq -o sample.fp.R1.fq.gz -O sample.fp.R2.fq.gz --thread=7 --html=sample.html --json=sample.json --detect_adapter_for_pe --qualified_quality_phred=10 --length_required=150
 ```
@@ -35,7 +35,7 @@ Variant filter:
 The variants called on parents were filtered so as to remove any loci with het genotype call, missing call and monoallelics
 
 
-#### 2. Genotyping of variants identified between parents in a recombinant inbred line (RIL) population.
+#### B. Genotyping of variants identified between parents in a recombinant inbred line (RIL) population.
 
 The SNP positions are listed in a file which is used in BCFtools:
 ```
