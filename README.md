@@ -32,7 +32,7 @@ bcftools mpileup --annotate AD,DP,INFO/AD --skip-indels -f TA299_validated_v1.0.
 ```
 Variant filter:
 
-The variants called on parents were filtered so as to remove any loci with het genotype call, missing call and monoallelics
+The variants called on parents were filtered so as to remove any loci with het genotype call, missing call and monomorphic loci
 
 
 #### B. Genotyping of variants identified between parents in a recombinant inbred line (RIL) population.
@@ -42,11 +42,11 @@ The SNP positions are listed in a file which is used in BCFtools:
 grep -v '^#' monococcum.parents.with.TA299.vcf | awk '{print $1"\t"$2"\t"$4","$5}' | bgzip -c > parentSNP_positions.tsv.gz && tabix -s1 -b2 -e2 parentSNP_positions.tsv.gz
 ```
 
-Remove adapters:
+Remove adapters from RILs skim-sequencing data as we did with parents WGS:
 ```
 fastp -i sample.R1.fq -I sample.R2.fq -o sample.fp.R1.fq.gz -O sample.fp.R2.fq.gz --thread=5 --html=sample.html --json=sample.json --detect_adapter_for_pe --qualified_quality_phred=10 --length_required=150
 ```
 
 The adapter trimmed reads from the doubled haploid lines were aligned to the reference genome using Hisat2 and filtered to recover unique concordant reads as parent. The 48 sorted bam file names are listed in `bamFile_list.txt` per line and used for genotyping using BCFtools:
 ```
-bcftools1.10.2/bin/bcftools mpileup -T parentSNP_positions.tsv.gz --annotate AD,DP,INFO/AD --skip-indels -f 170831_Landmark_pseudomolecules_v1.fasta -b bamFile_list.txt -B | bcftools1.10.2/bin/bcftools call -m --constrain alleles -T parentSNP_positions.tsv.gz --variants-only --skip-variants indels --output-type v -o StanMarkDH.vcf --group-samples -
+bcftools mpileup -T parentSNP_positions.tsv.gz --annotate AD,DP,INFO/AD --skip-indels -f TA299_validated_v1.0.monoc.ref.fasta -b bamFile_list.txt -B | bcftools call -m --constrain alleles -T parentSNP_positions.tsv.gz --variants-only --skip-variants indels --output-type v -o monococcum.RILs.vcf --group-samples -
