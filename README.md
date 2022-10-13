@@ -56,14 +56,11 @@ bcftools mpileup -T parentSNP_positions.tsv.gz --annotate AD,DP,INFO/AD --skip-i
 https://user-images.githubusercontent.com/49244360/195334810-6f2bc70e-96e9-4e96-b420-882fd309f5b5.png
 
 Merge RILs and Parents VCF so that two parents (P1 and P2) are in the last two columns:
-
 ```
 module load  BCFtools
-
 bgzip -c monococcum.RILs.vcf  > monococcum.RILs.vcf.gz
 bgzip -c monococcum.parents.with.TA299.vcf > monococcum.parents.with.TA299.vcf.gz
 bcftools merge *vcf.gz -Oz -o Merged.RIL.aegilorefTA299.validated.vcf.gz
-
 ```
 
 
