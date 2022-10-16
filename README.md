@@ -83,5 +83,5 @@ Convert alleles as either P1, P2, or H:
 sed -e "/1$/s/0\/0/P1/g" -e "/1$/s/1\/1/P2/g" -e "/0$/s/1\/1/P1/g" -e "/0$/s/0\/0/P2/g" -e "s/0\/1/H/g"  mono.parents.RILs.genotyped.header.txt > mono.parents.RILs.alleles.identified.txt
 ```
 
-# Separate genotyped individuals for allelic distibution graphs and generate bin map
+#### Separate genotyped individuals for allelic distibution graphs and generate bin map
 
