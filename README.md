@@ -35,7 +35,7 @@ Variant filter:
 The variants called on parents were filtered so as to remove any loci with het genotype call, missing call and monomorphic loci
 
 
-#### B. Genotyping of variants identified between parents in a recombinant inbred line (RIL) population.
+#### B. Genotyping of variants identified between parents in a recombinant inbred line (RIL) population
 
 The SNP positions are listed in a file which is used in BCFtools:
 ```
@@ -69,9 +69,8 @@ Convert Merge vcf file to txt file using BCFtools:
 
 ```
 module load BCFtools
-grep '#CHROM' Merged.mono.parents.RILs.vcf >   ## get header row of the txt file separately
-
-cut --complement  -f3,6,7,8,9  Merged.mono.parents.RILs.vcf.header.row.txt > header.row.trimmed.txt  ## remove unwanted header columns
+grep '#CHROM' Merged.mono.parents.RILs.vcf > header.row.txt   ## grep individual's names and other required info which will be the header row in txt file
+cut --complement  -f3,6,7,8,9  header.row.txt > header.row.trimmed.txt  ## remove unwanted columns in the header file
 
 bcftools query -f '%CHROM %POS  %REF  %ALT [ %GT]\n' Merged.mono.parents.RILs.vcf > Merged.mono.parents.RILs.vcf.txt ## this file does not have header
 
@@ -84,5 +83,5 @@ Convert alleles as either P1, P2, or H:
 sed -e "/1$/s/0\/0/P1/g" -e "/1$/s/1\/1/P2/g" -e "/0$/s/1\/1/P1/g" -e "/0$/s/0\/0/P2/g" -e "s/0\/1/H/g"  mono.parents.RILs.genotyped.header.txt > mono.parents.RILs.alleles.identified.txt
 ```
 
-
+# Separate genotyped individuals for allelic distibution graphs and generate bin map
 
