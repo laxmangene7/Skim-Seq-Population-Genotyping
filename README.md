@@ -54,8 +54,6 @@ bcftools mpileup -T parentSNP_positions.tsv.gz --annotate AD,DP,INFO/AD --skip-i
 
 # Finding allelic disributions in RILs
 
-https://user-images.githubusercontent.com/49244360/195334810-6f2bc70e-96e9-4e96-b420-882fd309f5b5.png
-
 Merge RILs and Parents VCF so that two parents (P1 and P2) are in the last two columns:
 ```
 module load  BCFtools
@@ -84,4 +82,43 @@ sed -e "/1$/s/0\/0/P1/g" -e "/1$/s/1\/1/P2/g" -e "/0$/s/1\/1/P1/g" -e "/0$/s/0\/
 ```
 
 #### Separate genotyped individuals for allelic distibution graphs and generate bin map
+Run script below to get individuals with genotype information as P1, P2, H or ./.(missing):
+```
+#!/bin/bash -l
+
+
+#INPUT FILE, header should look like:
+#chrom	Pos	Ref	Alt	sample_RIL1	sample_RIL2	sample_RIL3 ...parent1, parent2
+INPUT="mono.parents.RILs.alleles.identified.txt"
+
+#Get number of columns total for the for loop later
+num_of_cols=$(head -n1 $INPUT | awk '{print NF}')
+echo $num_of_cols
+
+echo "Making file with only header..."
+head -n 1 "$INPUT" > "$INPUT.onlyheader"
+
+echo "Making file without header..."
+tail -n +2 "$INPUT" > "$INPUT.tmp" && mv "$INPUT.tmp" "$INPUT.noheader"
+
+echo "Making file with all chromosomes and positions..."
+cat "$INPUT.noheader" | tr -s ' ' '\t' | cut -f 1-2 > "$INPUT.noheader.onlyChromPos"
+
+echo "Preparing to iterate through columns..."
+for i in $(seq 5 $num_of_cols)
+do
+    echo "Starting row $i..."
+    filename=$(awk "{print \$$i}" "$INPUT.onlyheader")
+    echo "Filename: $filename"
+    columnout=$(awk "{print \$$i}" "$INPUT.noheader")
+    #echo "Column Out: $columnout"
+    #Using the .noheader.onlyChromPos file as a template, add on an extra column of the sample and name it the sample's name
+    echo "$columnout" | paste -d'\t' "$INPUT.noheader.onlyChromPos" - > $filename.txt
+done
+```
+
+
+#### Want allelic distribution plot with P1, P2, H and missing? follow the steps below
+https://user-images.githubusercontent.com/49244360/195334810-6f2bc70e-96e9-4e96-b420-882fd309f5b5.png
+
 
