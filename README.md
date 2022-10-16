@@ -82,7 +82,7 @@ sed -e "/1$/s/0\/0/P1/g" -e "/1$/s/1\/1/P2/g" -e "/0$/s/1\/1/P1/g" -e "/0$/s/0\/
 ```
 
 #### Separate genotyped individuals for allelic distibution graphs and generate bin map
-Run script below to get individuals with genotype information as P1, P2, H or ./.(missing):
+Run script below to get individuals with chromosome, position and genotype information as P1, P2, H or ./.(missing):
 ```
 #!/bin/bash -l
 
@@ -121,7 +121,7 @@ done
 #### Want allelic distribution plot with P1, P2, H and missing? follow the steps below
 https://user-images.githubusercontent.com/49244360/195334810-6f2bc70e-96e9-4e96-b420-882fd309f5b5.png
 
-First replace the missing call with 'NA'
+a. First replace the missing call with 'NA':
 
 ```
 #!/bin/bash -l
@@ -135,3 +135,35 @@ sed 's|./.|NA|g' ${dir}/${base} > ${dir}/${base}_replace.NA.txt
 
 done
 ```
+
+b. put sample name in the columns which support when you have to run all samples in a single loop 
+
+```
+#!/bin/bash -l
+
+for i in *txt
+do
+name=$(echo $i | sed 's/.txt_replace.NA.//')
+awk -v NAME="$name" 'BEGIN{OFS="\t"}{$4=NAME} {print}' $i > ${i%}.newcol.txt
+done
+```
+
+c. Add numerical values on another column which makes easier to get plot using ggplot: 
+
+```
+#!/bin/bash -l
+
+for file in *.txt
+do
+awk ' BEGIN{OFS="\t"} $3~/P1$/ {$5="1"} $3~/P2$/ {$5="-1"} $3~/H$/ {$5="1.5"} $3~/NA$/ {$5="0"} 1'  ${file}  > ${file}.test1.txt 
+## we added 1 for P1, -1 for P2, 1.5 for H and 0 for missing 
+done
+```
+
+
+
+
+
+
+
+
