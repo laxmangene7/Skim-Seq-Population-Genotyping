@@ -69,6 +69,8 @@ Convert Merge vcf file to txt file using BCFtools:
 
 ```
 module load BCFtools
-grep '#CHROM' Merged.RIL.aegilorefTA299.validated.vcf > Merged.RIL.aegilorefTA299.validated.headr.row.txt ## get header row of the txt file separately
+grep '#CHROM' Merged.RIL.aegilorefTA299.validated.vcf > Merged.RIL.aegilorefTA299.validated.header.row.txt ## get header row of the txt file separately
+cut --complement  -f3,6,7,8,9. Merged.RIL.aegilorefTA299.validated.header.row.txt > Merged.RIL.aegilorefTA299.validated.header.row.trimmed.txt ## remove unwanted header columns
 bcftools query -f '%CHROM %POS  %REF  %ALT [ %GT]\n' Merged.RIL.aegilorefTA299.validated.vcf > Merged.RIL.aegilorefTA299.validated.vcf.txt
+cat Merged.RIL.aegilorefTA299.validated.header.row.trimmed.txt  Merged.RIL.aegilorefTA299.validated.vcf.txt >  Merged.RIL.aegilorefTA299.validated.genotyped.header.txt
 ```
