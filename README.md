@@ -75,7 +75,11 @@ cut --complement  -f3,6,7,8,9. Merged.RIL.aegilorefTA299.validated.header.row.tx
 
 bcftools query -f '%CHROM %POS  %REF  %ALT [ %GT]\n' Merged.RIL.aegilorefTA299.validated.vcf > Merged.RIL.aegilorefTA299.validated.vcf.txt
 
-cat Merged.RIL.aegilorefTA299.validated.header.row.trimmed.txt  Merged.RIL.aegilorefTA299.validated.vcf.txt >  
+cat Merged.RIL.aegilorefTA299.validated.header.row.trimmed.txt  Merged.RIL.aegilorefTA299.validated.vcf.txt >  Merged.RIL.aegilorefTA299.validated.genotyped.header.txt
+```
 
-Merged.RIL.aegilorefTA299.validated.genotyped.header.txt
+Convert alleles as either P1, P2, or H: 
+
+```
+sed -e "/1$/s/0\/0/P1/g" -e "/1$/s/1\/1/P2/g" -e "/0$/s/1\/1/P1/g" -e "/0$/s/0\/0/P2/g" -e "s/0\/1/H/g"  Merged.RIL.aegilorefTA299.validated.genotyped.header.txt > parents.RILs.alleles.identified.txt
 ```
