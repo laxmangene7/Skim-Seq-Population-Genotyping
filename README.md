@@ -1,7 +1,7 @@
 # Skim-Seq-Population-Genotyping-for-Linkage-Mapping
 Genotyping a larger plant population using skim-sequencing such as Nextera sequencing has gained popularity as a low-cost, efficient and high accuracy sequencing method. However, no proper analysis method to generate genotyping file from the raw sequence files have been documented in public domain.  This protocol describe how we call variants from skim-seq population when we have deep-sequencing data of the parental lines and the skim-sequencing data of the progenies or mapping population. 
 
-# Generating Parent and Progeny VCF files
+## Generating Parent and Progeny VCF files
 
 ### A. Variant calling in whole-genome-sequencing (WGS) parents
   Two monococcum wheat parents;  wild (TA4342_L95) and domesticated (TA4342_L96) and their progenies (RIL7) were used to test the pipeline. 
@@ -52,7 +52,7 @@ The adapter trimmed reads from the RILs were aligned to the reference genome usi
 bcftools mpileup -T parentSNP_positions.tsv.gz --annotate AD,DP,INFO/AD --skip-indels -f monoc.ref.fasta -b bamFile_list.txt -B | bcftools call -m --constrain alleles -T parentSNP_positions.tsv.gz --variants-only --skip-variants indels --output-type v -o monococcum.RILs.vcf --group-samples -
 ```
 
-# Finding allelic disributions in RILs
+## Finding allelic disributions in RILs
 
 Merge RILs and Parents VCF so that two parents (P1 and P2) are in the last two columns:
 ```
