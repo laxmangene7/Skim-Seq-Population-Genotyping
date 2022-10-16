@@ -123,6 +123,7 @@ https://user-images.githubusercontent.com/49244360/195334810-6f2bc70e-96e9-4e96-
 
 First replace the missing call with 'NA'
 
+```
 #!/bin/bash -l
 
 for sample in `ls /dir/individual_files/sample*`
@@ -133,3 +134,4 @@ base=$(basename $sample "sample")
 sed 's|./.|NA|g' ${dir}/${base} > ${dir}/${base}_replace.NA.txt
 
 done
+```
