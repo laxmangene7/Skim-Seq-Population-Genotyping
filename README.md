@@ -121,4 +121,15 @@ done
 #### Want allelic distribution plot with P1, P2, H and missing? follow the steps below
 https://user-images.githubusercontent.com/49244360/195334810-6f2bc70e-96e9-4e96-b420-882fd309f5b5.png
 
+First replace the missing call with 'NA'
 
+#!/bin/bash -l
+
+for sample in `ls /dir/individual_files/sample*`
+do
+dir="/dir/individual_files"
+base=$(basename $sample "sample")
+
+sed 's|./.|NA|g' ${dir}/${base} > ${dir}/${base}_replace.NA.txt
+
+done
