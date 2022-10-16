@@ -52,7 +52,7 @@ The adapter trimmed reads from the doubled haploid lines were aligned to the ref
 bcftools mpileup -T parentSNP_positions.tsv.gz --annotate AD,DP,INFO/AD --skip-indels -f TA299_validated_v1.0.monoc.ref.fasta -b bamFile_list.txt -B | bcftools call -m --constrain alleles -T parentSNP_positions.tsv.gz --variants-only --skip-variants indels --output-type v -o monococcum.RILs.vcf --group-samples -
 ```
 
-# Visualization of allelic disributions in RILs
+# Finding allelic disributions in RILs
 
 https://user-images.githubusercontent.com/49244360/195334810-6f2bc70e-96e9-4e96-b420-882fd309f5b5.png
 
@@ -62,6 +62,13 @@ module load  BCFtools
 bgzip -c monococcum.RILs.vcf  > monococcum.RILs.vcf.gz
 bgzip -c monococcum.parents.with.TA299.vcf > monococcum.parents.with.TA299.vcf.gz
 bcftools merge *vcf.gz -Oz -o Merged.RIL.aegilorefTA299.validated.vcf.gz
+unzip  Merged.RIL.aegilorefTA299.validated.vcf.gz > Merged.RIL.aegilorefTA299.validated.vcf
 ```
 
+Convert Merge vcf file to txt file using BCFtools:
 
+```
+module load BCFtools
+grep '#CHROM' Merged.RIL.aegilorefTA299.validated.vcf > Merged.RIL.aegilorefTA299.validated.headr.row.txt ## get header row of the txt file separately
+bcftools query -f '%CHROM %POS  %REF  %ALT [ %GT]\n' Merged.RIL.aegilorefTA299.validated.vcf > Merged.RIL.aegilorefTA299.validated.vcf.txt
+```
