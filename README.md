@@ -14,21 +14,21 @@ fastp -i sample.R1.fq -I sample.R2.fq -o sample.fp.R1.fq.gz -O sample.fp.R2.fq.g
 
 The WGS data of two monococcum parents were aligned to the TA299 wild monoroccom reference genome using Hisat2:
 ```
-hisat2-2.1.0/hisat2 -p 12 -x TA299_validated_v1.0.monoc.ref -1 TA4342_L95.fp.R1.fq.gz -2 TA4342_L95.fp.R2.fq.gz--no-spliced-alignment --no-unal -S TA4342_L95.sam
-hisat2-2.1.0/hisat2 -p 12 -x TA299_validated_v1.0.monoc.ref -1 TA4342_L96.fp.R1.fq.gz -2 TA4342_L96.fp.R2.fq.gz--no-spliced-alignment --no-unal -S TA4342_L96.sam
+hisat2-2.1.0/hisat2 -p 12 -x Hisat2.indexed.monoc.ref -1 TA4342_L95.fp.R1.fq.gz -2 TA4342_L95.fp.R2.fq.gz--no-spliced-alignment --no-unal -S parent1.sam
+hisat2-2.1.0/hisat2 -p 12 -x Hisat2.indexed.monoc.ref -1 TA4342_L96.fp.R1.fq.gz -2 TA4342_L96.fp.R2.fq.gz--no-spliced-alignment --no-unal -S parent2.sam
 ```
 
 Retriving concordant unique reads:
 ```
-cat <(samtools view -H TA4342_L95.sam) <(awk '/YT:Z:CP/ && /NH:i:1/' TA4342_L95.sam) | samtools sort -o TA4342_L95.s.bam
-samtools index -c TA4342_L95.s.bam
-cat <(samtools view -H TA4342_L96.sam) <(awk '/YT:Z:CP/ && /NH:i:1/' TA4342_L96.sam) | samtools sort -o TA4342_L96.s.bam
-samtools index -c TA4342_L96.s.bam
+cat <(samtools view -H parent1.sam) <(awk '/YT:Z:CP/ && /NH:i:1/' parent1.sam) | samtools sort -o parent1.s.bam
+samtools index -c parent1.s.bam
+cat <(samtools view -H parent2.sam) <(awk '/YT:Z:CP/ && /NH:i:1/' parent2.sam) | samtools sort -o parent2.s.bam
+samtools index -c parent2.s.bam
 ```
 
 Variant calling:
 ```
-bcftools mpileup --annotate AD,DP,INFO/AD --skip-indels -f TA299_validated_v1.0.monoc.ref.fasta -b bamFilesList.txt -B | bcftools call -m --variants-only  --skip-variants indels --output-type v -o monococcum.parents.with.TA299.vcf --group-samples -
+bcftools mpileup --annotate AD,DP,INFO/AD --skip-indels -f monoc.ref.fasta -b bamFilesList.txt -B | bcftools call -m --variants-only  --skip-variants indels --output-type v -o monococcum.parents.RILs.vcf --group-samples -
 ```
 Variant filter:
 
@@ -39,7 +39,7 @@ The variants called on parents were filtered so as to remove any loci with het g
 
 The SNP positions are listed in a file which is used in BCFtools:
 ```
-grep -v '^#' monococcum.parents.with.TA299.vcf | awk '{print $1"\t"$2"\t"$4","$5}' | bgzip -c > parentSNP_positions.tsv.gz && tabix -s1 -b2 -e2 parentSNP_positions.tsv.gz
+grep -v '^#' monococcum.parents.RILs.vcf | awk '{print $1"\t"$2"\t"$4","$5}' | bgzip -c > parentSNP_positions.tsv.gz && tabix -s1 -b2 -e2 parentSNP_positions.tsv.gz.  ## though we did not use -b2 flag here
 ```
 
 Remove adapters from RILs skim-sequencing data as we did with parents WGS:
@@ -47,9 +47,9 @@ Remove adapters from RILs skim-sequencing data as we did with parents WGS:
 fastp -i sample.R1.fq -I sample.R2.fq -o sample.fp.R1.fq.gz -O sample.fp.R2.fq.gz --thread=5 --html=sample.html --json=sample.json --detect_adapter_for_pe --qualified_quality_phred=10 --length_required=150
 ```
 
-The adapter trimmed reads from the doubled haploid lines were aligned to the reference genome using Hisat2 and filtered to recover unique concordant reads as parent. The 48 sorted bam file names are listed in `bamFile_list.txt` per line and used for genotyping using BCFtools:
+The adapter trimmed reads from the RILs were aligned to the reference genome using Hisat2. The RIL's sorted bam file names are listed in `bamFile_list.txt` per line and used for genotyping using BCFtools:
 ```
-bcftools mpileup -T parentSNP_positions.tsv.gz --annotate AD,DP,INFO/AD --skip-indels -f TA299_validated_v1.0.monoc.ref.fasta -b bamFile_list.txt -B | bcftools call -m --constrain alleles -T parentSNP_positions.tsv.gz --variants-only --skip-variants indels --output-type v -o monococcum.RILs.vcf --group-samples -
+bcftools mpileup -T parentSNP_positions.tsv.gz --annotate AD,DP,INFO/AD --skip-indels -f monoc.ref.fasta -b bamFile_list.txt -B | bcftools call -m --constrain alleles -T parentSNP_positions.tsv.gz --variants-only --skip-variants indels --output-type v -o monococcum.RILs.vcf --group-samples -
 ```
 
 # Finding allelic disributions in RILs
@@ -60,28 +60,28 @@ Merge RILs and Parents VCF so that two parents (P1 and P2) are in the last two c
 ```
 module load  BCFtools
 bgzip -c monococcum.RILs.vcf  > monococcum.RILs.vcf.gz
-bgzip -c monococcum.parents.with.TA299.vcf > monococcum.parents.with.TA299.vcf.gz
-bcftools merge *vcf.gz -Oz -o Merged.RIL.aegilorefTA299.validated.vcf.gz
-unzip  Merged.RIL.aegilorefTA299.validated.vcf.gz > Merged.RIL.aegilorefTA299.validated.vcf
+bgzip -c monococcum.parents.RILs.vcf > monococcum.parents.RILs.vcf.gz
+bcftools merge *vcf.gz -Oz -o Merged.mono.parents.RILs.vcf.gz
+unzip  Merged.mono.parents.RILs.vcf.gz > Merged.mono.parents.RILs.vcf
 ```
 
 Convert Merge vcf file to txt file using BCFtools:
 
 ```
 module load BCFtools
-grep '#CHROM' Merged.RIL.aegilorefTA299.validated.vcf > Merged.RIL.aegilorefTA299.validated.header.row.txt  ## get header row of the txt file separately
+grep '#CHROM' Merged.mono.parents.RILs.vcf >   ## get header row of the txt file separately
 
-cut --complement  -f3,6,7,8,9. Merged.RIL.aegilorefTA299.validated.header.row.txt > Merged.RIL.aegilorefTA299.validated.header.row.trimmed.txt ``` ## remove unwanted header columns
+cut --complement  -f3,6,7,8,9  Merged.mono.parents.RILs.vcf.header.row.txt > header.row.trimmed.txt  ## remove unwanted header columns
 
-bcftools query -f '%CHROM %POS  %REF  %ALT [ %GT]\n' Merged.RIL.aegilorefTA299.validated.vcf > Merged.RIL.aegilorefTA299.validated.vcf.txt
+bcftools query -f '%CHROM %POS  %REF  %ALT [ %GT]\n' Merged.mono.parents.RILs.vcf > Merged.mono.parents.RILs.vcf.txt ## this file does not have header
 
-cat Merged.RIL.aegilorefTA299.validated.header.row.trimmed.txt  Merged.RIL.aegilorefTA299.validated.vcf.txt >  parents.RILs.genotyped.header.txt
+cat header.row.trimmed.txt  Merged.mono.parents.RILs.vcf.header.row.txt >  mono.parents.RILs.genotyped.header.txt
 ```
 
 Convert alleles as either P1, P2, or H: 
 
 ```
-sed -e "/1$/s/0\/0/P1/g" -e "/1$/s/1\/1/P2/g" -e "/0$/s/1\/1/P1/g" -e "/0$/s/0\/0/P2/g" -e "s/0\/1/H/g"  parents.RILs.genotyped.header.txt > parents.RILs.alleles.identified.txt
+sed -e "/1$/s/0\/0/P1/g" -e "/1$/s/1\/1/P2/g" -e "/0$/s/1\/1/P1/g" -e "/0$/s/0\/0/P2/g" -e "s/0\/1/H/g"  mono.parents.RILs.genotyped.header.txt > mono.parents.RILs.alleles.identified.txt
 ```
 
 
