@@ -124,7 +124,7 @@ done
 ```
 
 
-#### Want allelic distribution plots with P1, P2, H and missing? follow the steps below
+#### Allelic distribution plots with P1, P2, H and missing
 
 
 a. First replace the missing call with 'NA':
