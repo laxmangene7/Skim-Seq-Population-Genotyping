@@ -185,7 +185,7 @@ library(data.table)
     geom_tile(stat="identity", width = 1.3, height =1.6) +
     scale_x_continuous(labels=function(x)x/1000000, breaks = seq(0,900000000, by = 100000000),expand = c(0.01, 0)) +
     scale_y_discrete(expand=c(0,2)) +
-    scale_fill_manual(values=c(P1 = "red", P2 = "blue", H = "magenta", Miss= "orange"), breaks=c("P1", "P2", "H", "Miss"), labels=c("parent1", "parent2",     "Het-call [imputed]", "Missing" )) +
+    scale_fill_manual(values=c(P1 = "red", P2 = "blue", H = "magenta", Miss= "gray"), breaks=c("P1", "P2", "H", "Miss"), labels=c("parent1", "parent2",     "Het-call [imputed]", "Missing" )) +
     theme(axis.text.x = element_text(size = 6, colour = "black", face = "bold"),
           axis.text.y = element_blank(),##element_text(size = 7, colour = "black", face = "bold"),
           axis.title = element_text(size=8, colour = "black", face = "bold"),
