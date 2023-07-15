@@ -209,7 +209,7 @@ library(data.table)
   ggsave("sample.newcol.added.pdf", p1, width = 9, height = 11, units = "in", limitsize = F)
   ```
   
-screen shots of some of these graphs, if you open these larger pdf with google chrome they open faster:
+screen shots of some of these graphs
 
 ![image](https://github.com/laxmangene7/Skim-Seq-Population-Genotyping/assets/49244360/78699771-eede-4945-881b-106e7287887c)
 
