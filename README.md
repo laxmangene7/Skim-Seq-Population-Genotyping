@@ -211,7 +211,8 @@ library(data.table)
   
 screen shots of some of these graphs, if you open these larger pdf with google chrome they open faster:
 
-https://user-images.githubusercontent.com/49244360/196034568-445869a7-2781-4880-850a-3cce0ae44fb5.png
+![image](https://github.com/laxmangene7/Skim-Seq-Population-Genotyping/assets/49244360/78699771-eede-4945-881b-106e7287887c)
+
 
 https://user-images.githubusercontent.com/49244360/195334810-6f2bc70e-96e9-4e96-b420-882fd309f5b5.png
 
