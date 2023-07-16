@@ -185,7 +185,7 @@ library(data.table)
     geom_tile(stat="identity", width = 1.3, height =1.6) +
     scale_x_continuous(labels=function(x)x/1000000, breaks = seq(0,900000000, by = 100000000),expand = c(0.01, 0)) +
     scale_y_discrete(expand=c(0,2)) +
-    scale_fill_manual(values=c(P1 = "red", P2 = "blue", H = "magenta", Miss= "gray"), breaks=c("P1", "P2", "H", "Miss"), labels=c("parent1", "parent2",     "Het-call [imputed]", "Missing" )) +
+    scale_fill_manual(values=c(P1 = "blue", P2 = "orange", H = "magenta", Miss= "gray"), breaks=c("P1", "P2", "H", "Miss"), labels=c("parent1", "parent2",     "Het-call [imputed]", "Missing" )) +
     theme(axis.text.x = element_text(size = 6, colour = "black", face = "bold"),
           axis.text.y = element_blank(),##element_text(size = 7, colour = "black", face = "bold"),
           axis.title = element_text(size=8, colour = "black", face = "bold"),
@@ -208,15 +208,13 @@ library(data.table)
   
   ggsave("sample.newcol.added.pdf", p1, width = 9, height = 11, units = "in", limitsize = F)
   ```
-  
+
+# Added centromeric positions
 screen shots of some of these graphs
 
 ![image](https://github.com/laxmangene7/Skim-Seq-Population-Genotyping/assets/49244360/78699771-eede-4945-881b-106e7287887c)
 
-
-https://user-images.githubusercontent.com/49244360/195334810-6f2bc70e-96e9-4e96-b420-882fd309f5b5.png
-
-https://user-images.githubusercontent.com/49244360/196035680-f29a1cb9-a0f3-411e-a728-4a2b9d0117e6.png
+![image](https://github.com/laxmangene7/Skim-Seq-Population-Genotyping/assets/49244360/9bd504a0-0660-49cf-b5be-6cd49f999406)
 
 
 
