@@ -209,8 +209,7 @@ library(data.table)
   ggsave("sample.newcol.added.pdf", p1, width = 9, height = 11, units = "in", limitsize = F)
   ```
 
-# Added centromeric positions
-screen shots of some of these graphs
+ Added centromeric positions as in the graph below
 
 ![image](https://github.com/laxmangene7/Skim-Seq-Population-Genotyping/assets/49244360/78699771-eede-4945-881b-106e7287887c)
 
