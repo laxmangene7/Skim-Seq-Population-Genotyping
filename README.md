@@ -49,7 +49,7 @@ fastp -i sample.R1.fq -I sample.R2.fq -o sample.fp.R1.fq.gz -O sample.fp.R2.fq.g
 
 The adapter trimmed reads from the RILs were aligned to the reference genome using Hisat2. The RIL's sorted bam file names are listed in `bamFile_list.txt` per line and used for genotyping using BCFtools:
 ```
-bcftools mpileup -T parentSNP_positions.tsv.gz --annotate AD,DP,INFO/AD --skip-indels -f monoc.ref.fasta -b bamFile_list.txt -B | bcftools call -m --constrain alleles -T parentSNP_positions.tsv.gz --variants-only --skip-variants indels --output-type v -o monococcum.RILs.vcf --group-samples -
+bcftools mpileup -T parentSNP_positions.tsv.gz --annotate AD,DP,INFO/AD --skip-indels -f monoc.ref.fasta -b bamFile_list.txt -B | bcftools call -m --constrain alleles -T parentSNP_positions.tsv.gz --variants-only --skip-variants indels --output-type v -o monococcum.RILs.vcf --group-samples -  ## group-sample option requires bcftools version at least 1.10.2 or above
 ```
 
 ## Finding allelic disributions in RILs
